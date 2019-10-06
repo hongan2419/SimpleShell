@@ -3,24 +3,37 @@
 int main()
 {
 	char line[MAX_LINE];
+	bool await;
 	while (1)
 	{
 		printf("osh>");
 		fflush(stdout);
 		if (!fgets(line, MAX_LINE, stdin))
+		{
 			break;
-		char *args[] = {line, (char *)0};
+		}
+		line[strcspn(line, "\n")] = 0;
+		await = true;
+		char **args = argsSplit(line, &await);
+		if (strcmp(args[0],"!!")==0)
+		{
+			args=loadHistory();
+			for (int i = 0; args[i]!=NULL; i++)
+				printf("%s ",args[i]);
+		}
 		int pid = fork();
 		if (pid == 0)
 		{
-			execvp(line, args);
-			perror("exec");
-			exit(1);
+			addHistory(args);
+			execvp(args[0], args);
+			return 0;
 		}
 		else
 		{
-			wait(NULL);
+			if (await)
+				wait(NULL);
 		}
+		free(args);
 	}
 
 	return 0;
