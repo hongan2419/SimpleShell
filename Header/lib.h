@@ -7,11 +7,18 @@
 #include <sys/types.h>
 #include <string.h>
 #include <stdbool.h>
+#include <fcntl.h>
 
 
 #define MAX_LINE 80
+
+#define INP_REDIC 1
+#define OUT_REDIC 2
+#define PIPE 3
+
+int checkCase(char**, char*, char*, char**);
 char** argsSplit(char*, bool*);
 char** loadHistory();
-bool addHistory();
+bool addHistory(char**);
 
 #endif
