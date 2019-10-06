@@ -3,7 +3,7 @@ Source file in the root folder
 Header in header folder
 
 # Build (using gcc)
-gcc *.cpp -o SimpleShell
+gcc *.c -o SimpleShell
 
 # Run
 ./SimpleShell
