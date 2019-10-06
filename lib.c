@@ -48,10 +48,31 @@ char** loadHistory(){
 	//TO DO:
 	//Read from file and assign into result
 	//Owner: Thao
+	FILE *file;
+	file = fopen("history.txt", "r");
+	char *line_buf = NULL;
+	size_t line_buf_size = 0;
+
+	getline(&line_buf, &line_buf_size, file);
+	fclose(file);
+
+	bool await = true;
+	char** p = argsSplit(line_buf, &await);
+	
+	free(line_buf);
+	line_buf = NULL;
+
+	return p;
 }
 
 bool addHistory(char** args){
 	//TO DO:
 	//Write down args into file to read it later
 	//Owner: Thao
+	FILE *file;
+	file = fopen("history.txt", "w");
+	for (int i = 0; args[i] != NULL; i++)
+		fprintf(file, "%s ",args[i]);
+	fprintf(file, "\n");
+	fclose(file);
 }
