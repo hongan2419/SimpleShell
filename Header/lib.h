@@ -6,10 +6,12 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <string.h>
+#include <stdbool.h>
 
 
 #define MAX_LINE 80
-
-char* stringSplit(char*);
+char** argsSplit(char*, bool*);
+char** loadHistory();
+bool addHistory();
 
 #endif
