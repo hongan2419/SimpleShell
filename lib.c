@@ -73,6 +73,5 @@ bool addHistory(char** args){
 	file = fopen("history.txt", "w");
 	for (int i = 0; args[i] != NULL; i++)
 		fprintf(file, "%s ",args[i]);
-	fprintf(file, "\n");
 	fclose(file);
 }
