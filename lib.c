@@ -1,6 +1,6 @@
 #include "Header/lib.h"
 
-char **argsSplit(char args[MAX_LINE], bool* await)
+char **argsSplit(char args[MAX_LINE], bool *await)
 {
 	char **res;
 	char delim[] = " ";
@@ -12,12 +12,12 @@ char **argsSplit(char args[MAX_LINE], bool* await)
 		temp[size++] = strdup(ptr);
 		ptr = strtok(NULL, delim);
 	}
-	if (strcmp(temp[size-1],"&")==0)
+	if (strcmp(temp[size - 1], "&") == 0)
 	{
 		size--;
-		*await = false;	
+		*await = false;
 	}
-	res = (char **)malloc(sizeof(char *) * size);
+	res = (char **)malloc(sizeof(char *) * (size + 1));
 	if (res == NULL)
 	{
 		return NULL;
@@ -32,19 +32,32 @@ char **argsSplit(char args[MAX_LINE], bool* await)
 	return res;
 }
 
-int checkCase(char** args, char* inFile, char* outFile, char** args2){
-	int t=0;
+int checkCase(char **args, char** inFile, char** outFile, char **args2)
+{
+	int t = 0;
 	int size;
 	for (size = 0; args[size] != NULL; size++)
 	{
-		if (strcmp(args[size], "|")==0){
+		if (strcmp(args[size], "|") == 0)
+		{
 			t = size;
 		}
+	}
+	if (t)
+	{
+	}
+	if (strcmp(args[size - 2], "<") == 0)
+	{
+		*inFile = (char *)malloc(sizeof(char) * (strlen(args[size - 1])) + 1);
+		strcpy(*inFile, args[size - 1]);
+		args[size - 2] = NULL;
+		return INP_REDIC;
 	}
 	return 0;
 }
 
-char** loadHistory(){
+char **loadHistory()
+{
 	//TO DO:
 	//Read from file and assign into result
 	//Owner: Thao
@@ -57,21 +70,22 @@ char** loadHistory(){
 	fclose(file);
 
 	bool await = true;
-	char** p = argsSplit(line_buf, &await);
-	
+	char **p = argsSplit(line_buf, &await);
+
 	free(line_buf);
 	line_buf = NULL;
 
 	return p;
 }
 
-bool addHistory(char** args){
+bool addHistory(char **args)
+{
 	//TO DO:
 	//Write down args into file to read it later
 	//Owner: Thao
 	FILE *file;
 	file = fopen("history.txt", "w");
 	for (int i = 0; args[i] != NULL; i++)
-		fprintf(file, "%s ",args[i]);
+		fprintf(file, "%s ", args[i]);
 	fclose(file);
 }
