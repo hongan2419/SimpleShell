@@ -36,20 +36,48 @@ int checkCase(char **args, char** inFile, char** outFile, char **args2)
 {
 	int t = 0;
 	int size;
+	int lengtgargs2=0;
 	for (size = 0; args[size] != NULL; size++)
 	{
 		if (strcmp(args[size], "|") == 0)
 		{
 			t = size;
 		}
+		lengtgargs2=size-t;
 	}
-	if (t)
+	args2= (char**) malloc(lengtgargs2* sizeof(char *));
+	if(t)
 	{
 		//TO DO: 
 		//Split args into args and args2
 		//Owner: Vinh
 		//Ex: args=["ls","-a","|","less", NULL]
 		//After the function args should be ["ls", "-a", NULL] and args2 should be ["less", NULL]
+		bool check = false;
+		for (size = 0; args[size] != NULL; size++)
+		{
+			if (strcmp(args[size], "|") == 0)
+			{
+				check=true;
+			}
+			if(check)
+			{
+				args2[size-t-1 ]= (char*) malloc(sizeof(args[size]));
+				strcpy(args2[size-t-1],args[size]);
+			}
+		}
+		check=false;
+		for (size = 0; args[size] != NULL; size++)
+		{
+			if (strcmp(args[size], "|") == 0)
+			{
+				check=true;
+			}
+			if(check)
+			{
+				free(args[size]);
+			}
+		}
 		return PIPE;
 	}
 	if (strcmp(args[size - 2], "<") == 0)
