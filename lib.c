@@ -45,6 +45,12 @@ int checkCase(char **args, char** inFile, char** outFile, char **args2)
 	}
 	if (t)
 	{
+		//TO DO: 
+		//Split args into args and args2
+		//Owner: Vinh
+		//Ex: args=["ls","-a","|","less", NULL]
+		//After the function args should be ["ls", "-a", NULL] and args2 should be ["less", NULL]
+		return PIPE;
 	}
 	if (strcmp(args[size - 2], "<") == 0)
 	{
