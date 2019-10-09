@@ -55,7 +55,7 @@ char** loadHistory(){
 
 	getline(&line_buf, &line_buf_size, file);
 	fclose(file);
-
+ 	
 	bool await = true;
 	char** p = argsSplit(line_buf, &await);
 	

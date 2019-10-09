@@ -18,8 +18,13 @@ int main()
 		if (strcmp(args[0],"!!")==0)
 		{
 			args=loadHistory();
-			for (int i = 0; args[i]!=NULL; i++)
-				printf("%s ",args[i]);
+			if (args[0] == NULL){
+				printf("No commands in history.");
+				}
+			else{
+				for (int i = 0; args[i]!=NULL; i++)
+					printf("%s ",args[i]);
+				}
 		}
 		int pid = fork();
 		if (pid == 0)
