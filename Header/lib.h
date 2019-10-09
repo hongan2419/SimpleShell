@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <fcntl.h>
+#include <errno.h>
 
 #define MAX_LINE 80
 
@@ -17,7 +18,8 @@
 #define OUT_REDIC 2
 #define PIPE 3
 
-int checkCase(char**, char**, char**, char**);
+void freeMem(char**);
+int checkCase(char**, char**, char**, char***);
 char** argsSplit(char*, bool*);
 char** loadHistory();
 bool addHistory(char**);

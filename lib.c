@@ -1,15 +1,27 @@
 #include "Header/lib.h"
 
+void freeMem(char** args)
+{
+	for (int i = 0; args[i] != NULL; i++)
+		free(args[i]);
+	free(args);
+}
+
 char **argsSplit(char args[MAX_LINE], bool *await)
 {
 	char **res;
-	char delim[] = " ";
+	char delim[] = " \t\r\n\a";
 	char *temp[MAX_LINE];
 	char *ptr = strtok(args, delim);
 	int size = 0;
 	while (ptr != NULL)
 	{
 		temp[size++] = strdup(ptr);
+		if (temp[size - 1] == NULL)
+		{
+			fprintf(stderr, "ERROR: allocating memory failed\n");
+			return NULL;
+		}
 		ptr = strtok(NULL, delim);
 	}
 	if (size == 0)
@@ -24,11 +36,17 @@ char **argsSplit(char args[MAX_LINE], bool *await)
 	res = (char **)malloc(sizeof(char *) * (size + 1));
 	if (res == NULL)
 	{
+		fprintf(stderr, "ERROR: allocating memory failed\n");
 		return NULL;
 	}
 	for (int i = 0; i < size; i++)
 	{
 		res[i] = (char *)malloc(sizeof(char) * (strlen(temp[i]) + 1));
+		if (res[i] == NULL)
+		{
+			fprintf(stderr, "ERROR: allocating memory failed\n");
+			return NULL;
+		}
 		strcpy(res[i], temp[i]);
 		free(temp[i]);
 	}
@@ -36,7 +54,7 @@ char **argsSplit(char args[MAX_LINE], bool *await)
 	return res;
 }
 
-int checkCase(char **args, char **inFile, char **outFile, char **args2)
+int checkCase(char **args, char **inFile, char **outFile, char ***args2)
 {
 	int t = 0;
 	int size;
@@ -49,23 +67,31 @@ int checkCase(char **args, char **inFile, char **outFile, char **args2)
 	}
 	if (t)
 	{
-		//TO DO:
-		//Split args into args and args2
-		//Owner: Vinh
-		//Ex: args=["ls","-a","|","less", NULL]
-		//After the function args should be ["ls", "-a", NULL] and args2 should be ["less", NULL]
+		*args2 = (char **)malloc(sizeof(char *) * (size - t));
+		for (int i = t + 1; i < size; i++)
+		{
+			(*args2)[i - (t + 1)] = (char *)malloc(sizeof(char) * (strlen(args[i]) + 1));
+			strcpy((*args2)[i - (t + 1)], args[i]);
+			free(args[i]);
+		}
+		(*args2)[size - (t + 1)] = NULL;
+		args[t] = NULL;
 		return PIPE;
+	}
+	if (size < 2)
+	{
+		return DEFAULT;
 	}
 	if (strcmp(args[size - 2], "<") == 0)
 	{
-		*inFile = (char *)malloc(sizeof(char) * (strlen(args[size - 1])) + 1);
+		*inFile = (char *)malloc(sizeof(char) * (strlen(args[size - 1]) + 1));
 		strcpy(*inFile, args[size - 1]);
 		args[size - 2] = NULL;
 		return INP_REDIC;
 	}
 	if (strcmp(args[size - 2], ">") == 0)
 	{
-		*outFile = (char *)malloc(sizeof(char) * (strlen(args[size - 1])) + 1);
+		*outFile = (char *)malloc(sizeof(char) * (strlen(args[size - 1]) + 1));
 		strcpy(*outFile, args[size - 1]);
 		args[size - 2] = NULL;
 		return OUT_REDIC;
