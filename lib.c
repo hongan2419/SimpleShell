@@ -12,6 +12,10 @@ char **argsSplit(char args[MAX_LINE], bool *await)
 		temp[size++] = strdup(ptr);
 		ptr = strtok(NULL, delim);
 	}
+	if (size == 0)
+	{
+		return NULL;
+	}
 	if (strcmp(temp[size - 1], "&") == 0)
 	{
 		size--;
@@ -32,7 +36,7 @@ char **argsSplit(char args[MAX_LINE], bool *await)
 	return res;
 }
 
-int checkCase(char **args, char** inFile, char** outFile, char **args2)
+int checkCase(char **args, char **inFile, char **outFile, char **args2)
 {
 	int t = 0;
 	int size;
@@ -45,7 +49,7 @@ int checkCase(char **args, char** inFile, char** outFile, char **args2)
 	}
 	if (t)
 	{
-		//TO DO: 
+		//TO DO:
 		//Split args into args and args2
 		//Owner: Vinh
 		//Ex: args=["ls","-a","|","less", NULL]
@@ -59,7 +63,14 @@ int checkCase(char **args, char** inFile, char** outFile, char **args2)
 		args[size - 2] = NULL;
 		return INP_REDIC;
 	}
-	return 0;
+	if (strcmp(args[size - 2], ">") == 0)
+	{
+		*outFile = (char *)malloc(sizeof(char) * (strlen(args[size - 1])) + 1);
+		strcpy(*outFile, args[size - 1]);
+		args[size - 2] = NULL;
+		return OUT_REDIC;
+	}
+	return DEFAULT;
 }
 
 char **loadHistory()

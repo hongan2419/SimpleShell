@@ -12,6 +12,7 @@
 
 #define MAX_LINE 80
 
+#define DEFAULT 0
 #define INP_REDIC 1
 #define OUT_REDIC 2
 #define PIPE 3

@@ -18,9 +18,13 @@ int main(int argc, char **argv)
 		{
 			break;
 		}
-		line[strcspn(line, "\n")] = 0;
+		line[strcspn(line, "\n")] = '\0';
 		await = true;
 		args = argsSplit(line, &await);
+		if (args == NULL)
+		{
+			continue;
+		}
 		int t = checkCase(args, &inFile, &outFile, args2);
 		int temp;
 		if (t == INP_REDIC)
@@ -30,6 +34,14 @@ int main(int argc, char **argv)
 			dup2(fileOpen, STDIN_FILENO);
 			close(fileOpen);
 			free(inFile);
+		}
+		else if (t == OUT_REDIC)
+		{
+			fileOpen = open(outFile, O_WRONLY);
+			temp=dup(STDOUT_FILENO);
+			dup2(fileOpen, STDOUT_FILENO);
+			close(fileOpen);
+			free(outFile);
 		}
 		if (strcmp(args[0], "!!") == 0)
 		{
@@ -43,7 +55,7 @@ int main(int argc, char **argv)
 		{
 			addHistory(args);
 			execvp(args[0], args);
-			return 0;
+			exit(0);
 		}
 		else
 		{
@@ -51,7 +63,9 @@ int main(int argc, char **argv)
 				wait(NULL);
 		}
 		if (t == INP_REDIC)
-		dup2(temp, STDIN_FILENO);
+			dup2(temp, STDIN_FILENO);
+		else if (t==OUT_REDIC)
+			dup2(temp, STDOUT_FILENO);
 		free(args);
 	}
 	return 0;
