@@ -7,7 +7,7 @@ void freeMem(char** args)
 	free(args);
 }
 
-char **argsSplit(char args[MAX_LINE], bool *await)
+char **argsSplit(char args[MAX_LINE])
 {
 	char **res;
 	char delim[] = " \t\r\n\a";
@@ -28,11 +28,6 @@ char **argsSplit(char args[MAX_LINE], bool *await)
 	{
 		return NULL;
 	}
-	if (strcmp(temp[size - 1], "&") == 0)
-	{
-		size--;
-		*await = false;
-	}
 	res = (char **)malloc(sizeof(char *) * (size + 1));
 	if (res == NULL)
 	{
@@ -52,6 +47,19 @@ char **argsSplit(char args[MAX_LINE], bool *await)
 	}
 	res[size] = NULL;
 	return res;
+}
+
+bool checkAwait(char **args)
+{
+	for (int i = 0; args[i] != NULL; i++)
+	{
+		if (strcmp(args[i], "&") ==0)
+		{
+			args[i] = NULL;
+			return false;
+		}
+	}
+	return true;
 }
 
 int checkCase(char **args, char **inFile, char **outFile, char ***args2)
@@ -101,34 +109,29 @@ int checkCase(char **args, char **inFile, char **outFile, char ***args2)
 
 char **loadHistory()
 {
-	//TO DO:
-	//Read from file and assign into result
-	//Owner: Thao
 	FILE *file;
 	file = fopen("history.txt", "r");
+	if (file == NULL)
+	{
+		fprintf(stderr, "ERROR: history file failed\n");
+		return NULL;
+	}
 	char *line_buf = NULL;
 	size_t line_buf_size = 0;
-
 	getline(&line_buf, &line_buf_size, file);
 	fclose(file);
- 	
-	bool await = true;
-	char **p = argsSplit(line_buf, &await);
-
+	char **p = argsSplit(line_buf);
 	free(line_buf);
 	line_buf = NULL;
-
 	return p;
 }
 
 bool addHistory(char **args)
 {
-	//TO DO:
-	//Write down args into file to read it later
-	//Owner: Thao
 	FILE *file;
 	file = fopen("history.txt", "w");
 	for (int i = 0; args[i] != NULL; i++)
 		fprintf(file, "%s ", args[i]);
 	fclose(file);
+	return true;
 }

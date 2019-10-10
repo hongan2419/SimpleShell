@@ -18,10 +18,11 @@
 #define OUT_REDIC 2
 #define PIPE 3
 
-void freeMem(char**);
+char** argsSplit(char*);
+bool checkAwait(char**);
 int checkCase(char**, char**, char**, char***);
-char** argsSplit(char*, bool*);
 char** loadHistory();
 bool addHistory(char**);
+void freeMem(char**);
 
 #endif
