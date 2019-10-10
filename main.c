@@ -32,9 +32,14 @@ int main(int argc, char **argv)
 		if (strcmp(args[0], "!!") == 0 && args[1] == NULL)
 		{
 			free(args);
-			args = loadHistory();
-			for (int i = 0; args[i] != NULL; i++)
-				printf("%s ", args[i]);
+			args=loadHistory();
+			if (args[0] == NULL){
+				printf("No commands in history.");
+				}
+			else{
+				for (int i = 0; args[i]!=NULL; i++)
+					printf("%s ",args[i]);
+				}
 		}
 		args2 = NULL;
 		int t = checkCase(args, &inFile, &outFile, &args2);
